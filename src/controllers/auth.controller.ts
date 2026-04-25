@@ -6,9 +6,10 @@ import { signJwt } from "../utils/jwt";
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
 
-  const [rows]: any = await pool.query("SELECT * FROM users WHERE email = ?", [
-    email,
-  ]);
+  const [rows]: any = await pool.execute(
+    "SELECT * FROM users WHERE email = ?",
+    [email],
+  );
 
   const user = rows[0];
 

@@ -2,6 +2,10 @@ import jwt from "jsonwebtoken";
 
 const SECRET = process.env.JWT_SECRET!;
 
+if (!SECRET) {
+  throw new Error("JWT_SECRET is not definet");
+}
+
 export function signJwt(payload: any) {
   return jwt.sign(payload, SECRET, { expiresIn: "1h" });
 }
