@@ -29,5 +29,12 @@ export async function login(req: Request, res: Response) {
     role: user.role,
   });
 
-  res.json({ token });
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: false, // change to true in production (HTTPS)
+    sameSite: "lax",
+    maxAge: 1000 * 60 * 60, // 1 hour
+  });
+
+  return res.json({ message: "Login successful" });
 }
