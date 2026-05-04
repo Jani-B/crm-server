@@ -12,3 +12,12 @@ export async function getCustomers(companyId: number) {
 
   return rows;
 }
+
+export async function getCustomerByIdService(id: number, companyId: number) {
+  const [rows]: any = await pool.query(
+    "SELECT * FROM customers WHERE id = ? AND company_id = ?",
+    [id, companyId],
+  );
+
+  return rows;
+}
