@@ -2,7 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import { verifyJwt } from "../utils/jwt";
 
 export function authMiddleware(req: any, res: Response, next: NextFunction) {
-  const token = req.cookies.token;
+  console.log("COOKIES:", req.cookies); // 👈 ADD THIS
+  console.log("HEADERS:", req.headers.authorization);
+  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });

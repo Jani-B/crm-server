@@ -12,9 +12,27 @@ const app = express();
 app.use(express.json());
 
 app.use(cookieParser());
+app.use((req, res, next) => {
+  if (req.url.startsWith("/crmserver")) {
+    req.url = req.url.replace("/crmserver", "") || "/";
+  }
+  next();
+});
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://fastvisitor.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:3000", // your Next.js dev
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
