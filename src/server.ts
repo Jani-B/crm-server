@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes";
 import customersRoutes from "./routes/customers.routes";
+import visitsRoutes from "./routes/visits.routes";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -39,6 +40,7 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/customers", customersRoutes);
+app.use("/api/visits", visitsRoutes);
 
 app.get("/", (req, res) => {
   res.send("API running");
