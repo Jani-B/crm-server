@@ -30,7 +30,7 @@ export async function getVisitsByCustomerController(
 
 export async function createVisitController(req: any, res: Response) {
   try {
-    const { customer_id, comment, visitedAt } = req.body;
+    const { customerId, comment, visitedAt } = req.body;
 
     const companyId = req.user.company;
 
@@ -42,8 +42,8 @@ export async function createVisitController(req: any, res: Response) {
     await pool.execute(
       `INSERT INTO visits
       (customer_id, company_id, visited_at, comment)
-      VALUES (?,?,?, NOW())`,
-      [customer_id, companyId, dateToUse, comment || null],
+      VALUES (?,?,?,?)`,
+      [customerId, companyId, dateToUse, comment || null],
     );
 
     res.json({
