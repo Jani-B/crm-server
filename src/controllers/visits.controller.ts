@@ -27,3 +27,33 @@ export async function getVisitsByCustomerController(
     });
   }
 }
+
+export async function createVisitController(req: any, res: Response) {
+  try {
+    const { customer_id, comment, visitedAt } = req.body;
+
+    const companyId = req.user.company;
+
+    const dateToUse =
+      visitedAt && visitedAt !== ""
+        ? new Date(visitedAt + "T00:00:00")
+        : new Date();
+
+    await pool.execute(
+      `INSERT INTO visits
+      (customer_id, company_id, visited_at, comment)
+      VALUES (?,?,?, NOW())`,
+      [customer_id, companyId, dateToUse, comment || null],
+    );
+
+    res.json({
+      message: "Visit added",
+    });
+  } catch (err) {
+    console.error("CREATE VISIT ERROR", err);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+}
