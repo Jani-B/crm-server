@@ -21,3 +21,15 @@ export async function getCustomerByIdService(id: number, companyId: number) {
 
   return rows;
 }
+
+export async function toggleImportantService(
+  customerId: number,
+  companyId: number,
+) {
+  await pool.query(
+    `UPDATE customers
+    SET is_important = NOT is_important
+    WHERE id = ? AND company_id = ?`,
+    [customerId, companyId],
+  );
+}

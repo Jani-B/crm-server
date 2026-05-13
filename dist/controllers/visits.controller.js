@@ -23,14 +23,14 @@ async function getVisitsByCustomerController(req, res) {
 }
 async function createVisitController(req, res) {
     try {
-        const { customer_id, comment, visitedAt } = req.body;
+        const { customerId, comment, visitedAt } = req.body;
         const companyId = req.user.company;
         const dateToUse = visitedAt && visitedAt !== ""
             ? new Date(visitedAt + "T00:00:00")
             : new Date();
         await db_1.pool.execute(`INSERT INTO visits
       (customer_id, company_id, visited_at, comment)
-      VALUES (?,?,?, NOW())`, [customer_id, companyId, dateToUse, comment || null]);
+      VALUES (?,?,?,?)`, [customerId, companyId, dateToUse, comment || null]);
         res.json({
             message: "Visit added",
         });

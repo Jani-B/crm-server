@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   getCustomers,
   getCustomerByIdService,
+  toggleImportantService,
 } from "../services/customers.service";
 
 export async function getCustomersController(req: any, res: Response) {
@@ -32,5 +33,23 @@ export async function getCustomerById(req: any, res: Response) {
   } catch (err) {
     console.log("GET CUSTOMER ERROR:", err);
     res.status(500).json({ message: "server error" });
+  }
+}
+
+export async function toggleImportantController(req: any, res: Response) {
+  try {
+    const { customerId } = req.body;
+    const companyId = req.user.company;
+
+    await toggleImportantService(customerId, companyId);
+
+    res.json({
+      message: "updated",
+    });
+  } catch (err) {
+    console.error("TOGGLE IMPORTANT ERROR:", err);
+    res.status(500).json({
+      message: "Server error",
+    });
   }
 }

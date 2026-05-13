@@ -6,4 +6,5 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = (0, express_1.Router)();
 router.get("/", authMiddleware_1.authMiddleware, customers_controller_1.getCustomersController);
 router.get("/:id", authMiddleware_1.authMiddleware, customers_controller_1.getCustomerById);
+router.post("/toggle-important", authMiddleware_1.authMiddleware, customers_controller_1.toggleImportantController);
 exports.default = router;

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCustomersController = getCustomersController;
 exports.getCustomerById = getCustomerById;
+exports.toggleImportantController = toggleImportantController;
 const customers_service_1 = require("../services/customers.service");
 async function getCustomersController(req, res) {
     try {
@@ -27,5 +28,21 @@ async function getCustomerById(req, res) {
     catch (err) {
         console.log("GET CUSTOMER ERROR:", err);
         res.status(500).json({ message: "server error" });
+    }
+}
+async function toggleImportantController(req, res) {
+    try {
+        const { customerId } = req.body;
+        const companyId = req.user.company;
+        await (0, customers_service_1.toggleImportantService)(customerId, companyId);
+        res.json({
+            message: "updated",
+        });
+    }
+    catch (err) {
+        console.error("TOGGLE IMPORTANT ERROR:", err);
+        res.status(500).json({
+            message: "Server error",
+        });
     }
 }

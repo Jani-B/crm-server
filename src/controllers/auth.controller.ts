@@ -31,8 +31,9 @@ export async function login(req: Request, res: Response) {
 
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false, // change to true in production (HTTPS)
-    sameSite: "lax",
+    secure: true, // change to true in production (HTTPS)
+    sameSite: "none", //because frontend and backend in different domains.
+    path: "/", //this is needed for the cookies to work on this
     maxAge: 1000 * 60 * 60, // 1 hour
   });
 
