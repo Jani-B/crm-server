@@ -3,9 +3,19 @@ import { pool } from "../config/db";
 export async function getCustomers(companyId: number) {
   const [rows]: any = await pool.query(
     `
-    SELECT id, name, address, lat, lng, is_important
-    FROM customers
-    WHERE company_id = ?
+    SELECT
+      c.id,
+      c.name,
+      c.address,
+      c.lat,
+      c.lng,
+      c.is_important,
+      MAX(v.visited_at) as last_visit
+    FROM customers c
+    LEFT JOIN visits v
+      ON v.customer_id = c.id
+    WHERE c.company_id = ?
+    GROUP BY c.id
     `,
     [companyId],
   );
