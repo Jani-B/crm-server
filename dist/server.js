@@ -9,6 +9,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 const customers_routes_1 = __importDefault(require("./routes/customers.routes"));
 const visits_routes_1 = __importDefault(require("./routes/visits.routes"));
+const users_routes_1 = __importDefault(require("./routes/users.routes"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -38,6 +39,7 @@ app.use((0, cors_1.default)({
 app.use("/api/auth", auth_routes_1.default);
 app.use("/api/customers", customers_routes_1.default);
 app.use("/api/visits", visits_routes_1.default);
+app.use("/api/users", users_routes_1.default);
 app.get("/", (req, res) => {
     res.send("API running");
 });
