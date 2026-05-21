@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
+import { parse } from "csv-parse/sync";
 import {
   getCustomers,
   getCustomerByIdService,
   toggleImportantService,
 } from "../services/customers.service";
+import { importCustomersService } from "../services/importCustomers.service";
 
 export async function getCustomersController(req: any, res: Response) {
   try {
@@ -49,6 +51,36 @@ export async function toggleImportantController(req: any, res: Response) {
   } catch (err) {
     console.error("TOGGLE IMPORTANT ERROR:", err);
     res.status(500).json({
+      message: "Server error",
+    });
+  }
+}
+
+export async function importCustomersController(req: any, res: Response) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        message: "No file uploaded",
+      });
+    }
+    const csvText = req.file.buffer.toString("utf-8");
+    const records = parse(csvText, {
+      columns: (header: string[]) => header.map((h) => h.trim()),
+      skip_empty_lines: true,
+      delimiter: ";",
+    });
+
+    const result = await importCustomersService(records, req.user.company);
+
+    return res.json({
+      message: "Import finished",
+      success: result.success,
+      failed: result.failed,
+    });
+  } catch (err) {
+    console.error("IMPORT ERROR:", err);
+
+    return res.status(500).json({
       message: "Server error",
     });
   }
