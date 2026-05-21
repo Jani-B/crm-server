@@ -6,4 +6,5 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = (0, express_1.Router)();
 router.get("/", authMiddleware_1.authMiddleware, users_controller_1.getUsersController);
 router.post("/", authMiddleware_1.authMiddleware, users_controller_1.createUserController);
+router.post("/activate", users_controller_1.activateUserController);
 exports.default = router;
