@@ -75,6 +75,7 @@ export async function importCustomersController(req: any, res: Response) {
     return res.json({
       message: "Import finished",
       success: result.success,
+      skipped: result.skipped,
       failed: result.failed,
     });
   } catch (err) {

@@ -12,8 +12,23 @@ export async function importCustomersService(
 ) {
   let success = 0;
   let failed = 0;
+  let skipped = 0;
 
   for (const row of customers) {
+    const [existingRows]: any = await pool.query(
+      `SELECT id FROM customers WHERE company_id = ? AND name = ? AND address = ?`,
+      [companyId, row.name, row.address],
+    );
+
+    //lets skip dublicates
+    if (existingRows.length > 0) {
+      console.log("Skipped dublicate: ", row.name);
+
+      skipped++;
+
+      continue;
+    }
+
     const geo = await geocodeAddress(row.address);
 
     await delay(1000);
@@ -40,5 +55,6 @@ export async function importCustomersService(
   return {
     success,
     failed,
+    skipped,
   };
 }

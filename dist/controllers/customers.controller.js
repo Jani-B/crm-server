@@ -66,6 +66,7 @@ async function importCustomersController(req, res) {
         return res.json({
             message: "Import finished",
             success: result.success,
+            skipped: result.skipped,
             failed: result.failed,
         });
     }

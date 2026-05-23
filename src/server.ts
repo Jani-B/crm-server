@@ -5,6 +5,7 @@ import authRoutes from "./routes/auth.routes";
 import customersRoutes from "./routes/customers.routes";
 import visitsRoutes from "./routes/visits.routes";
 import usersRoutes from "./routes/users.routes";
+import adminRoutes from "./routes/admin.routes";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -43,6 +44,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/customers", customersRoutes);
 app.use("/api/visits", visitsRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("API running");
