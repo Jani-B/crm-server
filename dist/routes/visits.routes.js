@@ -5,5 +5,6 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const visits_controller_1 = require("../controllers/visits.controller");
 const router = (0, express_1.Router)();
 router.get("/customer/:id", authMiddleware_1.authMiddleware, visits_controller_1.getVisitsByCustomerController);
+router.get("/", authMiddleware_1.authMiddleware, visits_controller_1.getVisitsController);
 router.post("/", authMiddleware_1.authMiddleware, visits_controller_1.createVisitController);
 exports.default = router;
