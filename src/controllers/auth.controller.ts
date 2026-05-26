@@ -39,3 +39,17 @@ export async function login(req: Request, res: Response) {
 
   return res.json({ message: "Login successful" });
 }
+
+export async function logout(req: Request, res: Response) {
+  res.cookie("token", "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    expires: new Date(0),
+  });
+
+  return res.json({
+    message: "Logged out",
+  });
+}

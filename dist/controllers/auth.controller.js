@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = login;
+exports.logout = logout;
 const db_1 = require("../config/db");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jwt_1 = require("../utils/jwt");
@@ -31,4 +32,16 @@ async function login(req, res) {
         maxAge: 1000 * 60 * 60, // 1 hour
     });
     return res.json({ message: "Login successful" });
+}
+async function logout(req, res) {
+    res.cookie("token", "", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        path: "/",
+        expires: new Date(0),
+    });
+    return res.json({
+        message: "Logged out",
+    });
 }
