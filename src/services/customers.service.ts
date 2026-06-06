@@ -1,4 +1,5 @@
 import { pool } from "../config/db";
+import { geocodeAddress } from "../utils/geocode";
 
 export async function getCustomers(companyId: number) {
   const [rows]: any = await pool.query(
@@ -41,5 +42,23 @@ export async function toggleImportantService(
     SET is_important = NOT is_important
     WHERE id = ? AND company_id = ?`,
     [customerId, companyId],
+  );
+}
+
+export async function createCustomerService(
+  name: string,
+  address: string,
+  companyId: number,
+) {
+  const geo = await geocodeAddress(address);
+
+  if (!geo) {
+    throw new Error("Address could not be geocoded");
+  }
+
+  await pool.execute(
+    `INSERT INTO customers
+    (name, address, lat, lng, company_id) VALUES (?,?,?,?,?)`,
+    [name, address, geo.lat, geo.lng, companyId],
   );
 }

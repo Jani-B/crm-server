@@ -4,6 +4,7 @@ import {
   getCustomers,
   getCustomerByIdService,
   toggleImportantService,
+  createCustomerService,
 } from "../services/customers.service";
 import { importCustomersService } from "../services/importCustomers.service";
 
@@ -81,6 +82,24 @@ export async function importCustomersController(req: any, res: Response) {
   } catch (err) {
     console.error("IMPORT ERROR:", err);
 
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+}
+
+export async function createCustomerController(req: any, res: Response) {
+  try {
+    const { name, address } = req.body;
+    const companyId = req.user.company;
+
+    await createCustomerService(name, address, companyId);
+
+    return res.json({
+      message: "Customer Created",
+    });
+  } catch (err) {
+    console.error("CREATE CUSTOMER ERROR:", err);
     return res.status(500).json({
       message: "Server error",
     });

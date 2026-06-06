@@ -3,7 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCustomers = getCustomers;
 exports.getCustomerByIdService = getCustomerByIdService;
 exports.toggleImportantService = toggleImportantService;
+exports.createCustomerService = createCustomerService;
 const db_1 = require("../config/db");
+const geocode_1 = require("../utils/geocode");
 async function getCustomers(companyId) {
     const [rows] = await db_1.pool.query(`
     SELECT
@@ -30,4 +32,12 @@ async function toggleImportantService(customerId, companyId) {
     await db_1.pool.query(`UPDATE customers
     SET is_important = NOT is_important
     WHERE id = ? AND company_id = ?`, [customerId, companyId]);
+}
+async function createCustomerService(name, address, companyId) {
+    const geo = await (0, geocode_1.geocodeAddress)(address);
+    if (!geo) {
+        throw new Error("Address could not be geocoded");
+    }
+    await db_1.pool.execute(`INSERT INTO customers
+    (name, address, lat, lng, company_id) VALUES (?,?,?,?,?)`, [name, address, geo.lat, geo.lng, companyId]);
 }

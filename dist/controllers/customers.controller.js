@@ -4,6 +4,7 @@ exports.getCustomersController = getCustomersController;
 exports.getCustomerById = getCustomerById;
 exports.toggleImportantController = toggleImportantController;
 exports.importCustomersController = importCustomersController;
+exports.createCustomerController = createCustomerController;
 const sync_1 = require("csv-parse/sync");
 const customers_service_1 = require("../services/customers.service");
 const importCustomers_service_1 = require("../services/importCustomers.service");
@@ -72,6 +73,22 @@ async function importCustomersController(req, res) {
     }
     catch (err) {
         console.error("IMPORT ERROR:", err);
+        return res.status(500).json({
+            message: "Server error",
+        });
+    }
+}
+async function createCustomerController(req, res) {
+    try {
+        const { name, address } = req.body;
+        const companyId = req.user.company;
+        await (0, customers_service_1.createCustomerService)(name, address, companyId);
+        return res.json({
+            message: "Customer Created",
+        });
+    }
+    catch (err) {
+        console.error("CREATE CUSTOMER ERROR:", err);
         return res.status(500).json({
             message: "Server error",
         });

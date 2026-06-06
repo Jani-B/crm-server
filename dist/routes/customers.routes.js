@@ -10,4 +10,5 @@ router.get("/", authMiddleware_1.authMiddleware, customers_controller_1.getCusto
 router.get("/:id", authMiddleware_1.authMiddleware, customers_controller_1.getCustomerById);
 router.post("/toggle-important", authMiddleware_1.authMiddleware, customers_controller_1.toggleImportantController);
 router.post("/import", authMiddleware_1.authMiddleware, rateLimit_1.importLimiter, uploadMiddleware_1.upload.single("file"), customers_controller_1.importCustomersController);
+router.post("/", authMiddleware_1.authMiddleware, customers_controller_1.createCustomerController);
 exports.default = router;

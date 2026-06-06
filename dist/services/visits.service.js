@@ -8,6 +8,6 @@ async function getVisitsService(companyId) {
         JOIN customers c
         on c.id = v.customer_id
         WHERE v.company_id = ?
-        ORDER BY v.visited_at DESC`[companyId]);
+        ORDER BY v.visited_at DESC`, [companyId]);
     return rows;
 }
