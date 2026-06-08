@@ -5,6 +5,7 @@ import {
   getCustomerByIdService,
   toggleImportantService,
   createCustomerService,
+  updateCustomerService,
 } from "../services/customers.service";
 import { importCustomersService } from "../services/importCustomers.service";
 
@@ -102,6 +103,24 @@ export async function createCustomerController(req: any, res: Response) {
     console.error("CREATE CUSTOMER ERROR:", err);
     return res.status(500).json({
       message: "Server error",
+    });
+  }
+}
+
+export async function updateCustomerController(req: any, res: Response) {
+  try {
+    const customerId = req.params.id;
+    const companyId = req.user.company;
+    const { name, address } = req.body;
+
+    await updateCustomerService(name, address, customerId, companyId);
+    return res.json({
+      message: "customer updated",
+    });
+  } catch (err) {
+    console.error("UPDATE CUSTOMER ERROR:", err);
+    return res.status(500).json({
+      message: "server error",
     });
   }
 }

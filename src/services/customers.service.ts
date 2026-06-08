@@ -62,3 +62,26 @@ export async function createCustomerService(
     [name, address, geo.lat, geo.lng, companyId],
   );
 }
+
+export async function updateCustomerService(
+  name: string,
+  address: string,
+  customerId: number,
+  companyId: number,
+) {
+  const geo = await geocodeAddress(address);
+
+  if (!geo) {
+    throw new Error("Address could not be geocoded");
+  }
+
+  const [result]: any = await pool.execute(
+    `UPDATE customers
+    SET name = ?, address = ?, lat = ?, lng = ? WHERE id = ? AND company_id = ?`,
+    [name, address, geo.lat, geo.lng, customerId, companyId],
+  );
+
+  if (result.affectedRows === 0) {
+    throw new Error("Customer not found");
+  }
+}

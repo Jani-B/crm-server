@@ -5,6 +5,7 @@ import {
   toggleImportantController,
   importCustomersController,
   createCustomerController,
+  updateCustomerController,
 } from "../controllers/customers.controller";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { importLimiter } from "../middleware/rateLimit";
@@ -25,5 +26,6 @@ router.post(
   importCustomersController,
 );
 router.post("/", authMiddleware, createCustomerController);
+router.put("/:id", authMiddleware, updateCustomerController);
 
 export default router;

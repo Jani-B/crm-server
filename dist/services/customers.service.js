@@ -4,6 +4,7 @@ exports.getCustomers = getCustomers;
 exports.getCustomerByIdService = getCustomerByIdService;
 exports.toggleImportantService = toggleImportantService;
 exports.createCustomerService = createCustomerService;
+exports.updateCustomerService = updateCustomerService;
 const db_1 = require("../config/db");
 const geocode_1 = require("../utils/geocode");
 async function getCustomers(companyId) {
@@ -40,4 +41,15 @@ async function createCustomerService(name, address, companyId) {
     }
     await db_1.pool.execute(`INSERT INTO customers
     (name, address, lat, lng, company_id) VALUES (?,?,?,?,?)`, [name, address, geo.lat, geo.lng, companyId]);
+}
+async function updateCustomerService(name, address, customerId, companyId) {
+    const geo = await (0, geocode_1.geocodeAddress)(address);
+    if (!geo) {
+        throw new Error("Address could not be geocoded");
+    }
+    const [result] = await db_1.pool.execute(`UPDATE customers
+    SET name = ?, address = ?, lat = ?, lng = ? WHERE id = ? AND company_id = ?`, [name, address, geo.lat, geo.lng, customerId, companyId]);
+    if (result.affectedRows === 0) {
+        throw new Error("Customer not found");
+    }
 }
