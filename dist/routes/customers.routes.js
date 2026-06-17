@@ -12,4 +12,5 @@ router.post("/toggle-important", authMiddleware_1.authMiddleware, customers_cont
 router.post("/import", authMiddleware_1.authMiddleware, rateLimit_1.importLimiter, uploadMiddleware_1.upload.single("file"), customers_controller_1.importCustomersController);
 router.post("/", authMiddleware_1.authMiddleware, customers_controller_1.createCustomerController);
 router.put("/:id", authMiddleware_1.authMiddleware, customers_controller_1.updateCustomerController);
+router.patch("/:id/inactive", authMiddleware_1.authMiddleware, customers_controller_1.deactivateCustomerController);
 exports.default = router;

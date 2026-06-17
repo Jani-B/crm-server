@@ -11,6 +11,7 @@ export async function getCustomers(companyId: number) {
       c.lat,
       c.lng,
       c.is_important,
+      c.is_active,
       MAX(v.visited_at) as last_visit
     FROM customers c
     LEFT JOIN visits v
@@ -79,6 +80,23 @@ export async function updateCustomerService(
     `UPDATE customers
     SET name = ?, address = ?, lat = ?, lng = ? WHERE id = ? AND company_id = ?`,
     [name, address, geo.lat, geo.lng, customerId, companyId],
+  );
+
+  if (result.affectedRows === 0) {
+    throw new Error("Customer not found");
+  }
+}
+
+export async function deactivateCustomerService(
+  customerId: number,
+  companyId: number,
+) {
+  const [result]: any = await pool.execute(
+    `UPDATE customers
+    SET is_active = 0
+    WHERE id = ?
+    AND company_id = ?`,
+    [customerId, companyId],
   );
 
   if (result.affectedRows === 0) {

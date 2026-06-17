@@ -6,6 +6,7 @@ import {
   toggleImportantService,
   createCustomerService,
   updateCustomerService,
+  deactivateCustomerService,
 } from "../services/customers.service";
 import { importCustomersService } from "../services/importCustomers.service";
 
@@ -121,6 +122,23 @@ export async function updateCustomerController(req: any, res: Response) {
     console.error("UPDATE CUSTOMER ERROR:", err);
     return res.status(500).json({
       message: "server error",
+    });
+  }
+}
+
+export async function deactivateCustomerController(req: any, res: Response) {
+  try {
+    const customerId = req.params.id;
+    const companyId = req.user.company;
+
+    await deactivateCustomerService(customerId, companyId);
+    return res.json({
+      message: "Customer Deactivated",
+    });
+  } catch (err) {
+    console.error("DEACTIVATE CUSTOMER ERROR:", err);
+    return res.status(500).json({
+      message: "Server error",
     });
   }
 }

@@ -6,6 +6,7 @@ exports.toggleImportantController = toggleImportantController;
 exports.importCustomersController = importCustomersController;
 exports.createCustomerController = createCustomerController;
 exports.updateCustomerController = updateCustomerController;
+exports.deactivateCustomerController = deactivateCustomerController;
 const sync_1 = require("csv-parse/sync");
 const customers_service_1 = require("../services/customers.service");
 const importCustomers_service_1 = require("../services/importCustomers.service");
@@ -109,6 +110,22 @@ async function updateCustomerController(req, res) {
         console.error("UPDATE CUSTOMER ERROR:", err);
         return res.status(500).json({
             message: "server error",
+        });
+    }
+}
+async function deactivateCustomerController(req, res) {
+    try {
+        const customerId = req.params.id;
+        const companyId = req.user.company;
+        await (0, customers_service_1.deactivateCustomerService)(customerId, companyId);
+        return res.json({
+            message: "Customer Deactivated",
+        });
+    }
+    catch (err) {
+        console.error("DEACTIVATE CUSTOMER ERROR:", err);
+        return res.status(500).json({
+            message: "Server error",
         });
     }
 }
