@@ -87,19 +87,18 @@ export async function updateCustomerService(
   }
 }
 
-export async function deactivateCustomerService(
+export async function updateCustomerStatusService(
   customerId: number,
   companyId: number,
+  isActive: boolean,
 ) {
   const [result]: any = await pool.execute(
     `UPDATE customers
-    SET is_active = 0
+    SET is_active = ?
     WHERE id = ?
     AND company_id = ?`,
-    [customerId, companyId],
+    [isActive ? 1 : 0, customerId, companyId],
   );
 
-  if (result.affectedRows === 0) {
-    throw new Error("Customer not found");
-  }
+  return result.affectedRows > 0;
 }

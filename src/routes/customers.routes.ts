@@ -6,7 +6,7 @@ import {
   importCustomersController,
   createCustomerController,
   updateCustomerController,
-  deactivateCustomerController,
+  updateCustomerStatusController,
 } from "../controllers/customers.controller";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { importLimiter } from "../middleware/rateLimit";
@@ -28,6 +28,6 @@ router.post(
 );
 router.post("/", authMiddleware, createCustomerController);
 router.put("/:id", authMiddleware, updateCustomerController);
-router.patch("/:id/inactive", authMiddleware, deactivateCustomerController);
+router.patch("/:id/status", authMiddleware, updateCustomerStatusController);
 
 export default router;

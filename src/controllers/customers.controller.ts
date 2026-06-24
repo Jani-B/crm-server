@@ -6,9 +6,10 @@ import {
   toggleImportantService,
   createCustomerService,
   updateCustomerService,
-  deactivateCustomerService,
+  updateCustomerStatusService,
 } from "../services/customers.service";
 import { importCustomersService } from "../services/importCustomers.service";
+import { AnyMxRecord } from "dns";
 
 export async function getCustomersController(req: any, res: Response) {
   try {
@@ -126,17 +127,37 @@ export async function updateCustomerController(req: any, res: Response) {
   }
 }
 
-export async function deactivateCustomerController(req: any, res: Response) {
+export async function updateCustomerStatusController(req: any, res: Response) {
   try {
-    const customerId = req.params.id;
+    const customerId = Number(req.params.id);
     const companyId = req.user.company;
+    const { isActive } = req.body;
 
-    await deactivateCustomerService(customerId, companyId);
+    if (!Number.isInteger(customerId) || customerId <= 0) {
+      return res.status(400).json({
+        message: "Invalid customer ID",
+      });
+    }
+
+    const updated = await updateCustomerStatusService(
+      customerId,
+      companyId,
+      isActive,
+    );
+
+    if (!updated) {
+      return res.status(404).json({
+        message: "Customer not found",
+      });
+    }
+
     return res.json({
-      message: "Customer Deactivated",
+      message: isActive ? "Customer activated" : "Customer deactived",
+      isActive,
     });
   } catch (err) {
-    console.error("DEACTIVATE CUSTOMER ERROR:", err);
+    console.error("UPDATE CUSTOMER STATUS ERROR:", err);
+
     return res.status(500).json({
       message: "Server error",
     });

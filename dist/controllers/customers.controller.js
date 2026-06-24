@@ -6,7 +6,7 @@ exports.toggleImportantController = toggleImportantController;
 exports.importCustomersController = importCustomersController;
 exports.createCustomerController = createCustomerController;
 exports.updateCustomerController = updateCustomerController;
-exports.deactivateCustomerController = deactivateCustomerController;
+exports.updateCustomerStatusController = updateCustomerStatusController;
 const sync_1 = require("csv-parse/sync");
 const customers_service_1 = require("../services/customers.service");
 const importCustomers_service_1 = require("../services/importCustomers.service");
@@ -113,17 +113,29 @@ async function updateCustomerController(req, res) {
         });
     }
 }
-async function deactivateCustomerController(req, res) {
+async function updateCustomerStatusController(req, res) {
     try {
-        const customerId = req.params.id;
+        const customerId = Number(req.params.id);
         const companyId = req.user.company;
-        await (0, customers_service_1.deactivateCustomerService)(customerId, companyId);
+        const { isActive } = req.body;
+        if (!Number.isInteger(customerId) || customerId <= 0) {
+            return res.status(400).json({
+                message: "Invalid customer ID",
+            });
+        }
+        const updated = await (0, customers_service_1.updateCustomerStatusService)(customerId, companyId, isActive);
+        if (!updated) {
+            return res.status(404).json({
+                message: "Customer not found",
+            });
+        }
         return res.json({
-            message: "Customer Deactivated",
+            message: isActive ? "Customer activated" : "Customer deactived",
+            isActive,
         });
     }
     catch (err) {
-        console.error("DEACTIVATE CUSTOMER ERROR:", err);
+        console.error("UPDATE CUSTOMER STATUS ERROR:", err);
         return res.status(500).json({
             message: "Server error",
         });

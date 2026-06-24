@@ -5,7 +5,7 @@ exports.getCustomerByIdService = getCustomerByIdService;
 exports.toggleImportantService = toggleImportantService;
 exports.createCustomerService = createCustomerService;
 exports.updateCustomerService = updateCustomerService;
-exports.deactivateCustomerService = deactivateCustomerService;
+exports.updateCustomerStatusService = updateCustomerStatusService;
 const db_1 = require("../config/db");
 const geocode_1 = require("../utils/geocode");
 async function getCustomers(companyId) {
@@ -55,12 +55,10 @@ async function updateCustomerService(name, address, customerId, companyId) {
         throw new Error("Customer not found");
     }
 }
-async function deactivateCustomerService(customerId, companyId) {
+async function updateCustomerStatusService(customerId, companyId, isActive) {
     const [result] = await db_1.pool.execute(`UPDATE customers
-    SET is_active = 0
+    SET is_active = ?
     WHERE id = ?
-    AND company_id = ?`, [customerId, companyId]);
-    if (result.affectedRows === 0) {
-        throw new Error("Customer not found");
-    }
+    AND company_id = ?`, [isActive ? 1 : 0, customerId, companyId]);
+    return result.affectedRows > 0;
 }
