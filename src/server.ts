@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes";
 import customersRoutes from "./routes/customers.routes";
 import visitsRoutes from "./routes/visits.routes";
+import scheduledVisitsRoutes from "./routes/scheduledVisits.routes";
 import usersRoutes from "./routes/users.routes";
 import adminRoutes from "./routes/admin.routes";
 import cookieParser from "cookie-parser";
@@ -43,6 +44,7 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/customers", customersRoutes);
 app.use("/api/visits", visitsRoutes);
+app.use("/api/scheduled-visits", scheduledVisitsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/admin", adminRoutes);
 
