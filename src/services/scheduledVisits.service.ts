@@ -6,7 +6,6 @@ export async function createScheduledVisitService(
   customerId: number,
   scheduledAt: string,
   durationMin: number = 60,
-  visitOrder: number = 0,
   notes?: string,
 ) {
   // Security:
@@ -26,6 +25,21 @@ export async function createScheduledVisitService(
   if (customerRows.length === 0) {
     throw new Error("Customer not found");
   }
+
+  const [orderRows]: any = await pool.execute(
+    `
+    SELECT COALESCE(MAX(visit_order), 0) AS maxOrder
+    FROM scheduled_visits
+    WHERE
+     company_id = ?
+     AND user_id = ?
+     AND DATE(scheduled_at) = DATE(?)
+     AND status = 'planned'
+     `,
+     [companyId, userId, scheduledAt],
+  )
+
+  const visitOrder = orderRows[0].maxOrder + 1;
 
   await pool.execute(
     `

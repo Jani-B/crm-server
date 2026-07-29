@@ -5,21 +5,12 @@ import {
   getScheduledVisitsService,
 } from "../services/scheduledVisits.service";
 
-export async function createScheduledVisitController(
-  req: any,
-  res: Response,
-) {
+export async function createScheduledVisitController(req: any, res: Response) {
   try {
     const companyId = req.user.company;
     const userId = req.user.id;
 
-    const {
-      customerId,
-      scheduledAt,
-      durationMin,
-      visitOrder,
-      notes,
-    } = req.body;
+    const { customerId, scheduledAt, durationMin, notes } = req.body;
 
     await createScheduledVisitService(
       companyId,
@@ -27,7 +18,6 @@ export async function createScheduledVisitController(
       customerId,
       scheduledAt,
       durationMin,
-      visitOrder,
       notes,
     );
 
@@ -43,18 +33,12 @@ export async function createScheduledVisitController(
   }
 }
 
-export async function getScheduledVisitsController(
-  req: any,
-  res: Response,
-) {
+export async function getScheduledVisitsController(req: any, res: Response) {
   try {
     const companyId = req.user.company;
     const userId = req.user.id;
 
-    const visits = await getScheduledVisitsService(
-      companyId,
-      userId,
-    );
+    const visits = await getScheduledVisitsService(companyId, userId);
 
     return res.json(visits);
   } catch (err) {

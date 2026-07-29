@@ -11,7 +11,7 @@ export async function importCustomersService(
   companyId: number,
 ) {
   let success = 0;
-  let failed = 0;
+  let noCoordinates = 0;
   let skipped = 0;
 
   for (const row of customers) {
@@ -33,12 +33,13 @@ export async function importCustomersService(
 
     await delay(1000);
 
+    const lat = geo?.lat ?? null;
+    const lng = geo?.lng ?? null;
+
     if (!geo) {
       console.log("No coordinates for:", row.address);
 
-      failed++;
-
-      continue;
+      noCoordinates++;
     }
 
     await pool.query(
@@ -46,7 +47,7 @@ export async function importCustomersService(
         INSERT INTO customers
         (name, address, lat, lng, company_id)
         VALUES (?,?,?,?,?)`,
-      [row.name, row.address, geo.lat, geo.lng, companyId],
+      [row.name, row.address, lat, lng, companyId],
     );
 
     success++;
@@ -54,7 +55,7 @@ export async function importCustomersService(
 
   return {
     success,
-    failed,
+    noCoordinates,
     skipped,
   };
 }

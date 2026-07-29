@@ -9,6 +9,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 const customers_routes_1 = __importDefault(require("./routes/customers.routes"));
 const visits_routes_1 = __importDefault(require("./routes/visits.routes"));
+const scheduledVisits_routes_1 = __importDefault(require("./routes/scheduledVisits.routes"));
 const users_routes_1 = __importDefault(require("./routes/users.routes"));
 const admin_routes_1 = __importDefault(require("./routes/admin.routes"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
@@ -40,6 +41,7 @@ app.use((0, cors_1.default)({
 app.use("/api/auth", auth_routes_1.default);
 app.use("/api/customers", customers_routes_1.default);
 app.use("/api/visits", visits_routes_1.default);
+app.use("/api/scheduled-visits", scheduledVisits_routes_1.default);
 app.use("/api/users", users_routes_1.default);
 app.use("/api/admin", admin_routes_1.default);
 app.get("/", (req, res) => {

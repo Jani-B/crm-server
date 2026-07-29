@@ -80,7 +80,7 @@ export async function importCustomersController(req: any, res: Response) {
       message: "Import finished",
       success: result.success,
       skipped: result.skipped,
-      failed: result.failed,
+      noCoordinates: result.noCoordinates,
     });
   } catch (err) {
     console.error("IMPORT ERROR:", err);
