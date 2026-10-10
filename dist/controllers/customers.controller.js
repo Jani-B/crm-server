@@ -70,7 +70,7 @@ async function importCustomersController(req, res) {
             message: "Import finished",
             success: result.success,
             skipped: result.skipped,
-            failed: result.failed,
+            noCoordinates: result.noCoordinates,
         });
     }
     catch (err) {

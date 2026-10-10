@@ -8,7 +8,7 @@ function delay(ms) {
 }
 async function importCustomersService(customers, companyId) {
     let success = 0;
-    let failed = 0;
+    let noCoordinates = 0;
     let skipped = 0;
     for (const row of customers) {
         const [existingRows] = await db_1.pool.query(`SELECT id FROM customers WHERE company_id = ? AND name = ? AND address = ?`, [companyId, row.name, row.address]);
@@ -20,20 +20,21 @@ async function importCustomersService(customers, companyId) {
         }
         const geo = await (0, geocode_1.geocodeAddress)(row.address);
         await delay(1000);
+        const lat = geo?.lat ?? null;
+        const lng = geo?.lng ?? null;
         if (!geo) {
             console.log("No coordinates for:", row.address);
-            failed++;
-            continue;
+            noCoordinates++;
         }
         await db_1.pool.query(`
         INSERT INTO customers
         (name, address, lat, lng, company_id)
-        VALUES (?,?,?,?,?)`, [row.name, row.address, geo.lat, geo.lng, companyId]);
+        VALUES (?,?,?,?,?)`, [row.name, row.address, lat, lng, companyId]);
         success++;
     }
     return {
         success,
-        failed,
+        noCoordinates,
         skipped,
     };
 }

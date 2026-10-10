@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { pool } from "../config/db";
-import { getVisitsService } from "../services/visits.service";
+import {
+  getVisitsService,
+  createVisitService,
+} from "../services/visits.service";
 
 export async function getVisitsByCustomerController(req: any, res: Response) {
   try {
@@ -30,40 +33,34 @@ export async function getVisitsByCustomerController(req: any, res: Response) {
 
 export async function createVisitController(req: any, res: Response) {
   try {
-    const { customerId, comment, visitedAt } = req.body;
+    const { customerId, comment, visitedAt, scheduledVisitId } = req.body;
 
     const companyId = req.user.company;
 
-    const dateToUse =
-      visitedAt && visitedAt !== ""
-        ? new Date(visitedAt + "T00:00:00")
-        : new Date();
-
-    const [customerRows]: any = await pool.execute(
-      `SELECT id 
-      FROM customers
-      WHERE id = ?
-      AND company_id = ?`,
-      [customerId, companyId],
-    );
-
-    if (customerRows.length === 0) {
-      return res.status(403).json({
-        message: "Customer not found",
-      });
-    }
-
-    await pool.execute(
-      `INSERT INTO visits
-      (customer_id, company_id, visited_at, comment)
-      VALUES (?,?,?,?)`,
-      [customerId, companyId, dateToUse, comment || null],
+    await createVisitService(
+      companyId,
+      customerId,
+      comment,
+      visitedAt,
+      scheduledVisitId,
     );
 
     res.json({
       message: "Visit added",
     });
-  } catch (err) {
+  } catch (err: any) {
+    if (
+      [
+        "Customer not found",
+        "Scheduled visit not found",
+        "Scheduled visit customer mismatch",
+        "Scheduled visit is not planned",
+        "Invalid visit date",
+      ].includes(err.message)
+    ) {
+      return res.status(403).json({ message: err.message });
+    }
+
     console.error("CREATE VISIT ERROR", err);
 
     res.status(500).json({

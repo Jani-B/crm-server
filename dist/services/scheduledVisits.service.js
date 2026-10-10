@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createScheduledVisitService = createScheduledVisitService;
 exports.getScheduledVisitsService = getScheduledVisitsService;
 const db_1 = require("../config/db");
-async function createScheduledVisitService(companyId, userId, customerId, scheduledAt, durationMin = 60, visitOrder = 0, notes) {
+async function createScheduledVisitService(companyId, userId, customerId, scheduledAt, durationMin = 60, notes) {
     // Security:
     // Make sure customer belongs to this company
     const [customerRows] = await db_1.pool.execute(`
@@ -16,6 +16,16 @@ async function createScheduledVisitService(companyId, userId, customerId, schedu
     if (customerRows.length === 0) {
         throw new Error("Customer not found");
     }
+    const [orderRows] = await db_1.pool.execute(`
+    SELECT COALESCE(MAX(visit_order), 0) AS maxOrder
+    FROM scheduled_visits
+    WHERE
+     company_id = ?
+     AND user_id = ?
+     AND DATE(scheduled_at) = DATE(?)
+     AND status = 'planned'
+     `, [companyId, userId, scheduledAt]);
+    const visitOrder = orderRows[0].maxOrder + 1;
     await db_1.pool.execute(`
     INSERT INTO scheduled_visits
     (

@@ -38,11 +38,15 @@ async function toggleImportantService(customerId, companyId) {
 }
 async function createCustomerService(name, address, companyId) {
     const geo = await (0, geocode_1.geocodeAddress)(address);
-    if (!geo) {
-        throw new Error("Address could not be geocoded");
-    }
+    //if no coordinates for address avaiable return null.
+    //this allows for creating a customer even if geocoding does not know the address.
+    const lat = geo?.lat ?? null;
+    const lng = geo?.lng ?? null;
+    /*if (!geo) {
+      throw new Error("Address could not be geocoded");
+    }*/
     await db_1.pool.execute(`INSERT INTO customers
-    (name, address, lat, lng, company_id) VALUES (?,?,?,?,?)`, [name, address, geo.lat, geo.lng, companyId]);
+    (name, address, lat, lng, company_id) VALUES (?,?,?,?,?)`, [name, address, lat, lng, companyId]);
 }
 async function updateCustomerService(name, address, customerId, companyId) {
     const geo = await (0, geocode_1.geocodeAddress)(address);

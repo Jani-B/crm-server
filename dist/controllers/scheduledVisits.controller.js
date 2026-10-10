@@ -7,8 +7,8 @@ async function createScheduledVisitController(req, res) {
     try {
         const companyId = req.user.company;
         const userId = req.user.id;
-        const { customerId, scheduledAt, durationMin, visitOrder, notes, } = req.body;
-        await (0, scheduledVisits_service_1.createScheduledVisitService)(companyId, userId, customerId, scheduledAt, durationMin, visitOrder, notes);
+        const { customerId, scheduledAt, durationMin, notes } = req.body;
+        await (0, scheduledVisits_service_1.createScheduledVisitService)(companyId, userId, customerId, scheduledAt, durationMin, notes);
         return res.json({
             message: "Scheduled visit created",
         });

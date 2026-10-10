@@ -27,28 +27,23 @@ async function getVisitsByCustomerController(req, res) {
 }
 async function createVisitController(req, res) {
     try {
-        const { customerId, comment, visitedAt } = req.body;
+        const { customerId, comment, visitedAt, scheduledVisitId } = req.body;
         const companyId = req.user.company;
-        const dateToUse = visitedAt && visitedAt !== ""
-            ? new Date(visitedAt + "T00:00:00")
-            : new Date();
-        const [customerRows] = await db_1.pool.execute(`SELECT id 
-      FROM customers
-      WHERE id = ?
-      AND company_id = ?`, [customerId, companyId]);
-        if (customerRows.length === 0) {
-            return res.status(403).json({
-                message: "Customer not found",
-            });
-        }
-        await db_1.pool.execute(`INSERT INTO visits
-      (customer_id, company_id, visited_at, comment)
-      VALUES (?,?,?,?)`, [customerId, companyId, dateToUse, comment || null]);
+        await (0, visits_service_1.createVisitService)(companyId, customerId, comment, visitedAt, scheduledVisitId);
         res.json({
             message: "Visit added",
         });
     }
     catch (err) {
+        if ([
+            "Customer not found",
+            "Scheduled visit not found",
+            "Scheduled visit customer mismatch",
+            "Scheduled visit is not planned",
+            "Invalid visit date",
+        ].includes(err.message)) {
+            return res.status(403).json({ message: err.message });
+        }
         console.error("CREATE VISIT ERROR", err);
         res.status(500).json({
             message: "Server error",
